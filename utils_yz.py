@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+import numpy as np
 import scipy as sp
 
 # https://www.kaggle.com/wiki/LogarithmicLoss
