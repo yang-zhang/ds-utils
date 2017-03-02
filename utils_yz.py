@@ -2,6 +2,7 @@
 import numpy as np
 import scipy as sp
 
+
 # https://www.kaggle.com/wiki/LogarithmicLoss
 def logloss(act, pred):
     epsilon = 1e-15
