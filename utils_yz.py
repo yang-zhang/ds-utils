@@ -63,7 +63,7 @@ def df_categorical_col_value_counts(df, col, ratio=False):
         return counts
 
 
-def df_categorical_rate_by_categorical_col(df, categorical_col_1, categorical_col_2):
+def df_categorical_col_percent_by_categorical_col(df, categorical_col_1, categorical_col_2):
     return df.groupby(categorical_col_1).apply(lambda x: x[categorical_col_2].value_counts(dropna=False)/x.shape[0])
 
 
@@ -116,11 +116,11 @@ if __name__ == '__main__':
     print df_categorical_col_value_counts(df, 'val_categorical_2', ratio=True)
     print '\n'
 
-    print 'df_categorical_rate_by_categorical_col'
-    print df_categorical_rate_by_categorical_col(df, 'val_categorical_1', 'val_boolean')
-    print df_categorical_rate_by_categorical_col(df, 'val_categorical_1', 'val_categorical_2')
-    print df_categorical_rate_by_categorical_col(df, 'val_categorical_2', 'val_boolean')
+    print 'df_categorical_col_percent_by_categorical_col'
+    print df_categorical_col_percent_by_categorical_col(df, 'val_categorical_1', 'val_boolean')
+    print df_categorical_col_percent_by_categorical_col(df, 'val_categorical_1', 'val_categorical_2')
+    print df_categorical_col_percent_by_categorical_col(df, 'val_categorical_2', 'val_boolean')
     df_new = df_replace_nan_by_missing(df, 'val_categorical_2')
-    print df_categorical_rate_by_categorical_col(df_new, 'val_categorical_2', 'val_boolean')
+    print df_categorical_col_percent_by_categorical_col(df_new, 'val_categorical_2', 'val_boolean')
     print '\n'
 
