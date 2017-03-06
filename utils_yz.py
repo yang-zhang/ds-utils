@@ -120,6 +120,16 @@ def df_chi_square_test(df, col_1, col_2):
     return scipy.stats.chi2_contingency(contingency_table)
 
 
+# anova
+def df_anova(df, col_num, col_cat):
+    cat_col_unique_values = df[col_cat].dropna().unique()
+    list_vec_per_value = []
+    for v in cat_col_unique_values:
+        list_vec_per_value.append(
+            df[col_num][df[col_cat] == v].dropna()
+        )
+    return scipy.stats.f_oneway(*list_vec_per_value)
+
 # metrics
 # https://www.kaggle.com/wiki/LogarithmicLoss
 def logloss(act, pred):
@@ -191,3 +201,6 @@ if __name__ == '__main__':
     print df_chi_square_test(df, 'val_categorical_1_target', 'val_categorical_2')
     print '-'*50
 
+    print 'df_anova'
+    print df_anova(df, 'val_real_1_target', 'val_categorical_2')
+    print '-'*50
