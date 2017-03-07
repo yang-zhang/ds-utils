@@ -5,13 +5,14 @@ import scipy as sp
 import statsmodels.stats.api as sms
 import scipy.stats
 
+
 # make test dataframe function
 def make_test_df(n_row=1000):
     df = pd.DataFrame(
         {
             'id': range(n_row),
             'val_boolean_1_target': np.random.choice([True, False], n_row),
-            'val_boolean_2': np.random.choice(['A', 'B'], n_row),
+            'val_categorical_binary': np.random.choice(['A', 'B'], n_row),
             'val_real_1_target': np.random.rand(n_row),
             'val_real_2': 5*np.random.rand(n_row) + 10,
             'val_categorical_1_target': np.random.choice(['X', 'Y', 'Z'], n_row),
@@ -20,12 +21,20 @@ def make_test_df(n_row=1000):
         }
     )
     df.loc[np.random.choice(n_row, int(n_row*0.1), replace=False), 'val_real_2'] = None
-    df.loc[np.random.choice(n_row, int(n_row*0.1), replace=False), 'val_boolean_2'] = None
+    df.loc[np.random.choice(n_row, int(n_row*0.1), replace=False), 'val_categorical_binary'] = None
     df.loc[np.random.choice(n_row, int(n_row*0.15), replace=False), 'val_categorical_2'] = None
     return df
 
 
 # preprocessing
+
+def df_cast_column_types(df, dict_dtype_col):
+    df_new = df.copy()
+    for dtype, cols in dict_dtype_col.items():
+        for col in cols:
+            df[col] = df[col].astype(dtype)
+    return df_new
+
 
 # replace null by string
 def df_replace_nan_by_missing(df, col, by='Missing'):
@@ -36,6 +45,36 @@ def df_replace_nan_by_missing(df, col, by='Missing'):
 
 
 # descriptive functions
+
+def describe_numerical(x, percentiles=np.linspace(0, 1, 5)):
+    d1 = {
+        'min': x.min(),
+        'max': x.max(),
+        'mean': x.mean(),
+        'sd': x.std(),
+        'percent_nulls': x.isnull().sum() / float(x.shape[0]),
+    }
+    s1 = pd.Series(d1)
+    s2 = x.dropna().quantile(percentiles)
+    return pd.concat([s1, s2])
+
+
+def df_describe_numerical_cols(df, cols):
+    return df[cols].apply(describe_numerical)
+
+
+def describe_categorical(x):
+    return pd.Series(
+        {
+            'num_unique_value': x.nunique(),
+            'percent_nulls': x.isnull().sum() / float(x.shape[0]),
+        }
+    )
+
+
+def df_describe_categorical_cols(df, cols):
+    return df[cols].apply(describe_categorical)
+
 
 def df_count_nulls(df, ratio=True):
     counts = df.apply(lambda x: x.isnull().sum())
@@ -148,6 +187,12 @@ if __name__ == '__main__':
     print df.sample(5)
     print '-'*50
 
+    print 'df_cast_column_types'
+    dict_dtype_col = {'float': ['val_real_2', 'id'], 'int': ['val_real_1_target', ],
+                      'category': ['val_categorical_binary', 'val_categorical_1_target', 'val_categorical_2'], }
+    print df_cast_column_types(df, dict_dtype_col).dtypes
+    print '-'*50
+
     print 'df_count_nulls'
     print df_count_nulls(df)
     print df_count_nulls(df, ratio=False)
@@ -186,11 +231,11 @@ if __name__ == '__main__':
 
     print 'df_t_test'
     print 'col_binary: binary feature; col_num: binary target (e.g., A/B test on conversion)'
-    print df_t_test(df, 'val_boolean_2', 'val_boolean_1_target')
+    print df_t_test(df, 'val_categorical_binary', 'val_boolean_1_target')
     print 'col_binary: binary target; col_num: numerical feature (e.g., age on conversion)'
     print df_t_test(df, 'val_boolean_1_target', 'val_real_2')
     print 'col_binary: binary feature; col_num: numerical target (e.g., A/B test on revenue)'
-    print df_t_test(df, 'val_boolean_2', 'val_real_1_target')
+    print df_t_test(df, 'val_categorical_binary', 'val_real_1_target')
     print '-'*50
 
     print 'df_table_r'
@@ -204,3 +249,6 @@ if __name__ == '__main__':
     print 'df_anova'
     print df_anova(df, 'val_real_1_target', 'val_categorical_2')
     print '-'*50
+
+    print df_describe_numerical_cols(df, ['val_real_1_target', 'val_real_2'])
+    print df_describe_categorical_cols(df, ['val_categorical_1_target', 'val_categorical_2'])
