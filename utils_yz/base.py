@@ -9,8 +9,9 @@ def make_test_df(n_row=1000):
             'user_id': range(n_row),
             'has_churned': np.random.choice([True, False], n_row),
             'price_plan': np.random.choice(['A', 'B'], n_row),
-            'total_purchase': np.random.rand(n_row),
-            'income': 5 * np.random.rand(n_row) + 10,
+            'total_purchase': 20 * np.random.rand(n_row) + 100,
+            'income': 5 * np.random.rand(n_row) + 500,
+            'tax': 2 * np.random.rand(n_row) + 50,
             'product_purchased': np.random.choice(['X', 'Y', 'Z'], n_row),
             'region': np.random.choice(['a', 'b', 'c', 'd'], n_row),
             'date_signed_on': np.random.choice(pd.date_range('2010-01-01', '2016-12-31'), n_row, replace=True).astype(
