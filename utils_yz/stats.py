@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
-import scipy as sp
 import statsmodels.stats.api as sms
 import scipy.stats
 
 import utils_yz.base
 import utils_yz.preprocessing
+
 
 # TODO: clean up
 
@@ -53,7 +53,7 @@ def df_t_test(df, col_binary, col_num):
 
 # chi-square test
 def df_chi_square_test(df, col_1, col_2):
-    contingency_table = utils_yz.explore.df_table_r(df, col_1, col_2)
+    contingency_table = utils_yz.base.df_table_r(df, col_1, col_2)
     return scipy.stats.chi2_contingency(contingency_table)
 
 
@@ -68,42 +68,32 @@ def df_anova(df, col_num, col_cat):
     return scipy.stats.f_oneway(*list_vec_per_value)
 
 
-# evaluation
-# https://www.kaggle.com/wiki/LogarithmicLoss
-def logloss(act, pred):
-    epsilon = 1e-15
-    pred = sp.maximum(epsilon, pred)
-    pred = sp.minimum(1 - epsilon, pred)
-    ll = sum(act * sp.log(pred) + sp.subtract(1, act) * sp.log(sp.subtract(1, pred)))
-    ll = ll * -1.0 / len(act)
-    return ll
-
-
 if __name__ == '__main__':
     df = utils_yz.base.make_test_df()
     df = utils_yz.preprocessing.preprocess_test_df(df)
     print df.sample(5)
     print '-' * 50
 
-    print 'df_corrcoef_matrix'
-    print df_corrcoef_matrix(df, numerical_cols=['total_purchase', 'income'])
-    print 'df_numerical_cols_corrcoef'
-    print df_numerical_cols_corrcoef(df, 'total_purchase', 'income')
-    print '-' * 50
-
-    print 'df_t_test'
-    print 'col_binary: binary feature; col_num: binary target (e.g., A/B test on conversion)'
-    print df_t_test(df, 'price_plan', 'has_churned')
-    print 'col_binary: binary target; col_num: numerical feature (e.g., age on conversion)'
-    print df_t_test(df, 'has_churned', 'income')
-    print 'col_binary: binary feature; col_num: numerical target (e.g., A/B test on revenue)'
-    print df_t_test(df, 'price_plan', 'total_purchase')
-    print '-' * 50
-
-    print 'df_chi_square_test'
-    print df_chi_square_test(df, 'product_purchased', 'region')
-    print '-' * 50
-
-    print 'df_anova'
-    print df_anova(df, 'total_purchase', 'region')
-    print '-' * 50
+    # TODO: test
+    # print 'df_corrcoef_matrix'
+    # print df_corrcoef_matrix(df, numerical_cols=['total_purchase', 'income'])
+    # print 'df_numerical_cols_corrcoef'
+    # print df_numerical_cols_corrcoef(df, 'total_purchase', 'income')
+    # print '-' * 50
+    #
+    # print 'df_t_test'
+    # print 'col_binary: binary feature; col_num: binary target (e.g., A/B test on conversion)'
+    # print df_t_test(df, 'price_plan', 'has_churned')
+    # print 'col_binary: binary target; col_num: numerical feature (e.g., age on conversion)'
+    # print df_t_test(df, 'has_churned', 'income')
+    # print 'col_binary: binary feature; col_num: numerical target (e.g., A/B test on revenue)'
+    # print df_t_test(df, 'price_plan', 'total_purchase')
+    # print '-' * 50
+    #
+    # print 'df_chi_square_test'
+    # print df_chi_square_test(df, 'product_purchased', 'region')
+    # print '-' * 50
+    #
+    # print 'df_anova'
+    # print df_anova(df, 'total_purchase', 'region')
+    # print '-' * 50
