@@ -13,10 +13,27 @@ Python utility functions. A number of functions takes a list of columns in Panda
   - categorical
     - distribution
     - distribution per target value
+- visualization
+  - numerical
+    - histogram
+    - frequency barplot (for low-cardinality variable)
+  - categorical
+    - frequency barplot
+  - numerical v.s. numerical
+    - scatterplot
+  - numerical v.s. categorical
+    - boxplot
+  - categorical v.s. categorical
+    - stacked barplot
+  - all variable
+    - pairplot
 - stats
   - correlation coefficient 
   - t-test
   - chi-square
   - anova
+- math_functions
+  - log and log_inv
+  - mad (median absolute deviation)
 - evaluation
   - logloss
