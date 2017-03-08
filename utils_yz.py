@@ -7,22 +7,25 @@ import scipy.stats
 
 
 # make test dataframe function
+
 def make_test_df(n_row=1000):
     df = pd.DataFrame(
         {
-            'id': range(n_row),
-            'val_boolean_1_target': np.random.choice([True, False], n_row),
-            'val_categorical_binary': np.random.choice(['A', 'B'], n_row),
-            'val_real_1_target': np.random.rand(n_row),
-            'val_real_2': 5*np.random.rand(n_row) + 10,
-            'val_categorical_1_target': np.random.choice(['X', 'Y', 'Z'], n_row),
-            'val_categorical_2': np.random.choice(['a', 'b', 'c', 'd'], n_row),
+            'user_id': range(n_row),
+            'has_churned': np.random.choice([True, False], n_row),
+            'price_plan': np.random.choice(['A', 'B'], n_row),
+            'total_purchase': np.random.rand(n_row),
+            'income': 5 * np.random.rand(n_row) + 10,
+            'product_purchased': np.random.choice(['X', 'Y', 'Z'], n_row),
+            'region': np.random.choice(['a', 'b', 'c', 'd'], n_row),
+            'date_signed_on': np.random.choice(pd.date_range('2010-01-01', '2016-12-31'), n_row, replace=True).astype(
+                'str'),
 
         }
     )
-    df.loc[np.random.choice(n_row, int(n_row*0.1), replace=False), 'val_real_2'] = None
-    df.loc[np.random.choice(n_row, int(n_row*0.1), replace=False), 'val_categorical_binary'] = None
-    df.loc[np.random.choice(n_row, int(n_row*0.15), replace=False), 'val_categorical_2'] = None
+    df.loc[np.random.choice(n_row, int(n_row * 0.1), replace=False), 'income'] = None
+    df.loc[np.random.choice(n_row, int(n_row * 0.1), replace=False), 'price_plan'] = None
+    df.loc[np.random.choice(n_row, int(n_row * 0.15), replace=False), 'region'] = None
     return df
 
 
@@ -31,8 +34,12 @@ def make_test_df(n_row=1000):
 def df_cast_column_types(df, dict_dtype_col):
     df_new = df.copy()
     for dtype, cols in dict_dtype_col.items():
-        for col in cols:
-            df[col] = df[col].astype(dtype)
+        if dtype == 'datetime':
+            for col in cols:
+                df_new[col] = pd.to_datetime(df_new[col])
+        else:
+            for col in cols:
+                df_new[col] = df_new[col].astype(dtype)
     return df_new
 
 
@@ -46,10 +53,13 @@ def df_replace_nan_by_missing(df, col, by='Missing'):
 
 # descriptive functions
 
+def df_col_is_unique_key(df, col):
+    return df[col].unique().shape[0] == df.shape[0]
+
+
 def describe_numerical(x, percentiles=np.linspace(0, 1, 5)):
     d1 = {
-        'min': x.min(),
-        'max': x.max(),
+        'count': x.shape[0],
         'mean': x.mean(),
         'sd': x.std(),
         'percent_nulls': x.isnull().sum() / float(x.shape[0]),
@@ -63,9 +73,15 @@ def df_describe_numerical_cols(df, cols):
     return df[cols].apply(describe_numerical)
 
 
+def df_describe_numerical_cols_by_categorical_col(df, numerical_cols, categorical_col,
+                                                  percentiles=np.linspace(0, 1, 5)):
+    return df.groupby(categorical_col)[numerical_cols].apply(lambda x: x.dropna().quantile(percentiles))
+
+
 def describe_categorical(x):
     return pd.Series(
         {
+            'count': x.shape[0],
             'num_unique_value': x.nunique(),
             'percent_nulls': x.isnull().sum() / float(x.shape[0]),
         }
@@ -76,53 +92,36 @@ def df_describe_categorical_cols(df, cols):
     return df[cols].apply(describe_categorical)
 
 
-def df_count_nulls(df, ratio=True):
-    counts = df.apply(lambda x: x.isnull().sum())
-    if ratio:
-        return counts/df.shape[0]
-    else:
-        return counts
-
-
-def df_col_is_unique_key(df, col):
-    return df[col].unique().shape[0] == df.shape[0]
-
-
-def df_numerical_col_percentile(df, col, percentile=np.linspace(0, 1, 5)):
-    return df[col].dropna().quantile(percentile)
-
-
-def df_numerical_col_percentile_by_categorical_col(df, numerical_feature, categorical_feature, percentile=np.linspace(0, 1, 5)):
-    return df.groupby(categorical_feature).apply(lambda x: x[numerical_feature].dropna().quantile(percentile))
-
-
-def df_categorical_col_count_values(df, col, ratio=True):
-    counts = df[col].value_counts(dropna=False).sort_index()
-    if ratio:
-        return counts / df.shape[0]
-    else:
-        return counts
-
-
-def df_categorical_col_percent_by_categorical_col(df, categorical_col_1, categorical_col_2):
-    return df.groupby(categorical_col_1).apply(lambda x: x[categorical_col_2].value_counts(dropna=False)/x.shape[0])
+def df_categorical_col_value_percent(df, col):
+    return df[col].value_counts(dropna=False).sort_values(ascending=False) / df.shape[0]
 
 
 # R-like table function
 def df_table_r(df, col_1, col_2):
     df_tmp = df.copy()
     df_tmp['_'] = 0
-    return df_tmp.pivot_table(values=['_'], columns=col_1, index=col_2, aggfunc='count')
+    tb = df_tmp.pivot_table(values=['_'], columns=col_1, index=col_2, aggfunc='count')
+    return tb['_']
+
+
+def df_describe_categorical_col_by_categorical_col(df, col_1, col_2):
+    tb = df_table_r(df, col_1, col_2)
+    return tb / tb.sum(axis=0)
 
 
 # statistics
 
 # numerical v.s. numerical
 def df_corrcoef_matrix(df, numerical_cols):
-    return np.corrcoef(np.array(df[numerical_cols].dropna()).T)
+    dict_dtype_col = {'float': numerical_cols}
+    df = df_cast_column_types(df, dict_dtype_col)
+    matrix_corrcoef = np.corrcoef(np.array(df[numerical_cols].dropna()).T)
+    df_corrcoef = pd.DataFrame(matrix_corrcoef)
+    df_corrcoef.columns = numerical_cols
+    df_corrcoef.index = numerical_cols
+    return df_corrcoef
 
 
-# numerical v.s. numerical
 def df_numerical_cols_corrcoef(df, col_1, col_2):
     df_cols_dropna = df[[col_1, col_2]].dropna()
     corr_coef, p_value = scipy.stats.pearsonr(df_cols_dropna[col_1], df_cols_dropna[col_2])
@@ -169,7 +168,8 @@ def df_anova(df, col_num, col_cat):
         )
     return scipy.stats.f_oneway(*list_vec_per_value)
 
-# metrics
+
+# evaluation
 # https://www.kaggle.com/wiki/LogarithmicLoss
 def logloss(act, pred):
     epsilon = 1e-15
@@ -181,74 +181,74 @@ def logloss(act, pred):
 
 
 if __name__ == '__main__':
-
     df = make_test_df()
-    # test descriptive functions
+
     print df.sample(5)
-    print '-'*50
+    print '-' * 50
 
     print 'df_cast_column_types'
-    dict_dtype_col = {'float': ['val_real_2', 'id'], 'int': ['val_real_1_target', ],
-                      'category': ['val_categorical_binary', 'val_categorical_1_target', 'val_categorical_2'], }
+    dict_dtype_col = {'float': ['income', 'user_id'],
+                      'int': ['total_purchase', ],
+                      'category': ['price_plan', 'product_purchased', 'region'],
+                      'datetime': ['date_signed_on'],
+                      }
     print df_cast_column_types(df, dict_dtype_col).dtypes
-    print '-'*50
+    print '-' * 50
 
-    print 'df_count_nulls'
-    print df_count_nulls(df)
-    print df_count_nulls(df, ratio=False)
-    print '-'*50
+    print 'df_replace_nan_by_missing'
+    df_new = df_replace_nan_by_missing(df, 'region')
+    print df_new.sample(5)
+    print '-' * 50
 
     print 'df_col_is_unique_key'
-    print df_col_is_unique_key(df, 'id')
-    print '-'*50
+    print df_col_is_unique_key(df, 'user_id')
+    print '-' * 50
 
-    print 'df_numerical_col_percentile'
-    print df_numerical_col_percentile(df, 'val_real_2')
-    print '-'*50
+    print 'df_describe_numerical_cols'
+    print df_describe_numerical_cols(df, ['total_purchase', 'income'])
+    print 'df_describe_categorical_cols'
+    print df_describe_categorical_cols(df, ['product_purchased', 'region'])
+    print '-' * 50
 
-    print 'df_numerical_col_percentile_by_categorical_col'
-    print df_numerical_col_percentile_by_categorical_col(df, 'val_real_2', 'val_boolean_1_target')
-    print df_numerical_col_percentile_by_categorical_col(df, 'val_real_2', 'val_categorical_2')
-    print '-'*50
+    # print 'df_numerical_col_percentile_by_categorical_col'
+    # print df_numerical_col_percentile_by_categorical_col(df, 'income', 'has_churned')
+    # print df_numerical_col_percentile_by_categorical_col(df, 'income', 'region')
+    # print '-' * 50
 
-    print 'df_categorical_col_count_values'
-    print df_categorical_col_count_values(df, 'val_categorical_2')
-    print df_categorical_col_count_values(df, 'val_categorical_2', ratio=False)
-    print '-'*50
+    print 'df_categorical_col_value_percent'
+    print df_categorical_col_value_percent(df, 'region')
+    print '-' * 50
 
-    print 'df_categorical_col_percent_by_categorical_col'
-    print df_categorical_col_percent_by_categorical_col(df, 'val_categorical_1_target', 'val_categorical_2')
-    print df_categorical_col_percent_by_categorical_col(df, 'val_categorical_2', 'val_boolean_1_target')
-    df_new = df_replace_nan_by_missing(df, 'val_categorical_2')
-    print df_categorical_col_percent_by_categorical_col(df_new, 'val_categorical_2', 'val_boolean_1_target')
-    print '-'*50
+    print 'df_describe_categorical_col_by_categorical_col'
+    print df_describe_categorical_col_by_categorical_col(df, 'region', 'product_purchased')
+    print df_describe_categorical_col_by_categorical_col(df, 'region', 'has_churned')
+    df_new = df_replace_nan_by_missing(df, 'region')
+    print df_describe_categorical_col_by_categorical_col(df_new, 'region', 'has_churned')
+    print '-' * 50
 
     print 'df_corrcoef_matrix'
-    print df_corrcoef_matrix(df, numerical_cols=['val_real_1_target', 'val_real_2'])
+    print df_corrcoef_matrix(df, numerical_cols=['total_purchase', 'income'])
     print 'df_numerical_cols_corrcoef'
-    print df_numerical_cols_corrcoef(df, 'val_real_1_target', 'val_real_2')
-    print '-'*50
+    print df_numerical_cols_corrcoef(df, 'total_purchase', 'income')
+    print '-' * 50
 
     print 'df_t_test'
     print 'col_binary: binary feature; col_num: binary target (e.g., A/B test on conversion)'
-    print df_t_test(df, 'val_categorical_binary', 'val_boolean_1_target')
+    print df_t_test(df, 'price_plan', 'has_churned')
     print 'col_binary: binary target; col_num: numerical feature (e.g., age on conversion)'
-    print df_t_test(df, 'val_boolean_1_target', 'val_real_2')
+    print df_t_test(df, 'has_churned', 'income')
     print 'col_binary: binary feature; col_num: numerical target (e.g., A/B test on revenue)'
-    print df_t_test(df, 'val_categorical_binary', 'val_real_1_target')
-    print '-'*50
+    print df_t_test(df, 'price_plan', 'total_purchase')
+    print '-' * 50
 
     print 'df_table_r'
-    print df_table_r(df, 'val_categorical_1_target', 'val_categorical_2')
-    print '-'*50
+    print df_table_r(df, 'product_purchased', 'region')
+    print '-' * 50
 
     print 'df_chi_square_test'
-    print df_chi_square_test(df, 'val_categorical_1_target', 'val_categorical_2')
-    print '-'*50
+    print df_chi_square_test(df, 'product_purchased', 'region')
+    print '-' * 50
 
     print 'df_anova'
-    print df_anova(df, 'val_real_1_target', 'val_categorical_2')
-    print '-'*50
-
-    print df_describe_numerical_cols(df, ['val_real_1_target', 'val_real_2'])
-    print df_describe_categorical_cols(df, ['val_categorical_1_target', 'val_categorical_2'])
+    print df_anova(df, 'total_purchase', 'region')
+    print '-' * 50
