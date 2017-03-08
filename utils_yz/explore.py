@@ -15,6 +15,7 @@ def df_col_is_unique_key(df, col):
 def describe_numerical(x, percentiles=np.linspace(0, 1, 5)):
     d1 = {
         'count': x.shape[0],
+        'num_unique_value': x.nunique(),
         'mean': x.mean(),
         'sd': x.std(),
         'percent_nulls': x.isnull().sum() / float(x.shape[0]),
@@ -54,7 +55,13 @@ def df_describe_categorical_cols(df, cols):
 
 
 def df_categorical_col_value_percent(df, col):
-    return df[col].value_counts(dropna=False).sort_values(ascending=False) / df.shape[0]
+    freq = df[col].value_counts(dropna=False).sort_values(ascending=False) / df.shape[0]
+    df_freq = pd.DataFrame(freq)
+    df_freq.columns = ['ratio']
+    df_freq[col] = df_freq.index
+    df_freq[col] = df_freq[col].astype('object')
+    df_freq.loc[df_freq[col].isnull(), col] = 'missing'
+    return df_freq
 
 
 def df_describe_categorical_col_by_categorical_col(df, col_1, col_2):
