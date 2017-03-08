@@ -1,2 +1,22 @@
 # utils-python
-Python utility functions.
+Python utility functions. A number of functions takes a list of columns in Pandas DataFrame and returns results in a single DataFrame.
+- base
+  - make_test_df
+  - df_table_r: R-like table function
+- preprocessing
+  - df_cast_column_types: cast all types in one function
+  - df_replace_nan_by_missing: replace nan while dealing with categorial
+- explore
+  - numerical
+    - distribution (quantiles)
+    - distribution (quantiles) per target value
+  - categorical
+    - distribution
+    - distribution per target value
+- stats
+  - correlation coefficient 
+  - t-test
+  - chi-square
+  - anova
+- evaluation
+  - logloss
