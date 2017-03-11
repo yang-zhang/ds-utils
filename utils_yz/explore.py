@@ -6,6 +6,10 @@ import utils_yz.base
 import utils_yz.preprocessing
 
 
+def df_null_rate(df):
+    return df.apply(lambda x: x.isnull().sum()/float(df.shape[0]))
+
+
 def df_col_is_unique_key(df, col):
     return df[col].unique().shape[0] == df.shape[0]
 
