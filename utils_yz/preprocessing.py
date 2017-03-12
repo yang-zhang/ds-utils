@@ -35,6 +35,14 @@ def df_replace_nan_by_missing(df, col, by='Missing'):
     return df_new
 
 
+def get_dummies_train_test(df_train, df_test, cat_cols=None):
+    df_train_test = pd.concat([df_train, df_test], join='inner', keys=['train', 'test'])
+    df_train_test_dummies = pd.get_dummies(df_train_test, columns=cat_cols)
+    df_train_dummies = df_train_test_dummies.ix['train']
+    df_test_dummies = df_train_test_dummies.ix['test']
+    return df_train_dummies, df_test_dummies
+
+
 if __name__ == '__main__':
     df = utils_yz.base.make_test_df()
 
@@ -52,3 +60,46 @@ if __name__ == '__main__':
     print df.region.cat.categories
     print df.sample(5)
     print '-' * 50
+
+    df_train = pd.DataFrame({
+        'letter': [
+            'a',
+            'b',
+            'c',
+        ],
+        'animal': [
+            'dog',
+            'cat',
+            'dog',
+        ],
+        'color': [
+            'red',
+            'green',
+            'blue',
+        ],
+        'number': [1., 2.5, 3.],
+        'target': [True, False, True]
+    })
+
+    df_test = pd.DataFrame({
+        'letter': [
+            'a',
+            'b',
+        ],
+        'animal': [
+            'dog',
+            'pig',
+        ],
+        'color': [
+            'red',
+            'green',
+        ],
+        'number': [2.5, 3.5],
+
+    })
+    print df_train
+    print df_test
+    df_train_dummies, df_test_dummies = get_dummies_train_test(
+        df_train, df_test, cat_cols=['letter', 'animal', 'color'])
+    print df_train_dummies
+    print df_test_dummies
