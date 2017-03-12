@@ -43,6 +43,13 @@ def get_dummies_train_test(df_train, df_test, cat_cols=None):
     return df_train_dummies, df_test_dummies
 
 
+def label_encode(df, cat_cols=None):
+    if not cat_cols:
+        cat_cols = df.columns
+    df[cat_cols] = df[cat_cols].apply(lambda x: x.astype('category').cat.codes)
+    return df
+
+
 def label_encode_train_test(df_train, df_test, cat_cols=None):
     df_train_test = pd.concat([df_train, df_test], join='inner', keys=['train', 'test'])
     if not cat_cols:
@@ -110,10 +117,15 @@ if __name__ == '__main__':
     print df_train
     print df_test
     categorical_cols = ['letter', 'animal', 'color']
+
+    print pd.get_dummies(df_train, columns=categorical_cols)
+
     df_train_dummies, df_test_dummies = get_dummies_train_test(
         df_train, df_test, cat_cols=categorical_cols)
     print df_train_dummies
     print df_test_dummies
+
+    print label_encode(df_train, cat_cols=categorical_cols)
     df_train_label_encoded, df_test_label_encoded = label_encode_train_test(
         df_train, df_test, cat_cols=categorical_cols)
     print df_train_label_encoded
