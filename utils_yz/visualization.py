@@ -1,3 +1,6 @@
+import sklearn.decomposition
+import sklearn.datasets
+
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -36,6 +39,19 @@ def df_pairplot(df, cols):
     sns.pairplot(df[cols].dropna());
 
 
+# http://scikit-learn.org/stable/tutorial/statistical_inference/putting_together.html
+def plot_pca_explained_variance_ratio(X, n_components=None):
+    pca = sklearn.decomposition.PCA(n_components=n_components)
+    pca.fit(X)
+    plt.figure(1, figsize=(4, 3))
+    plt.clf()
+    plt.axes([.2, .2, .7, .7])
+    plt.plot(pca.explained_variance_ratio_.cumsum(), linewidth=2)
+    plt.axis('tight')
+    plt.xlabel('n_components')
+    plt.ylabel('explained_variance_ratio_')
+
+
 if __name__ == '__main__':
     # best way to run: in jupyter notebook, run "run utils_yz / visualization.py".
     df = utils_yz.base.make_test_df()
@@ -61,3 +77,5 @@ if __name__ == '__main__':
     plt.figure()
     df_pairplot(df, ['has_churned', 'income', 'price_plan',
                      'product_purchased', 'region', 'tax', 'total_purchase'])
+
+    plot_pca_explained_variance_ratio(sklearn.datasets.load_digits().data)
