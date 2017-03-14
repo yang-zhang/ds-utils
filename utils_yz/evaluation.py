@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import numpy as np
 import scipy as sp
+import sklearn.metrics
 
 
 # https://www.kaggle.com/wiki/LogarithmicLoss
@@ -12,6 +14,15 @@ def logloss(act, pred):
     return ll
 
 
+def mean_absolute_exp_diff(y1, y2):
+    return np.abs(np.exp(y1) - np.exp(y2)).mean()
+
+
+mean_absolute_exp_error = sklearn.metrics.make_scorer(mean_absolute_exp_diff, greater_is_better=False)
+
 if __name__ == '__main__':
-    pass
-    # TODO
+    y1 = np.arange(1, 5)
+    y2 = np.arange(2, 6)
+    y1_log = np.log(y1)
+    y2_log = np.log(y2)
+    print np.isclose(sklearn.metrics.mean_absolute_error(y1, y2), mean_absolute_exp_diff(y1_log, y2_log))
