@@ -4,8 +4,8 @@ import sklearn.datasets
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-import utils_yz.preprocessing
-import utils_yz.explore
+import ds_utils.preprocessing
+import ds_utils.explore
 
 
 def df_hist(df, col, bins=None):
@@ -19,7 +19,7 @@ def df_scatterplot(df, numerical_col_1, numerical_col_2):
 
 
 def df_barplot_frequency(df, col):
-    df_freq = utils_yz.explore.df_categorical_col_value_percent(df, col)
+    df_freq = ds_utils.explore.df_categorical_col_value_percent(df, col)
     print df_freq
     ax = plt.axes()
     sns.barplot(x=col, y='ratio', data=df_freq)
@@ -31,7 +31,7 @@ def df_boxplot_numerical_col_by_categorical_col(df, numerical_col, categorical_c
 
 
 def df_stackedbarplot(df, col_1, col_2):
-    df_pivot = utils_yz.explore.df_describe_categorical_col_by_categorical_col(df, col_1, col_2)
+    df_pivot = ds_utils.explore.df_describe_categorical_col_by_categorical_col(df, col_1, col_2)
     df_pivot.T.plot(kind='bar', stacked=True)
 
 
@@ -53,9 +53,9 @@ def plot_pca_explained_variance_ratio(X, n_components=None):
 
 
 if __name__ == '__main__':
-    # best way to run: in jupyter notebook, run "run utils_yz / visualization.py".
-    df = utils_yz.base.make_test_df()
-    df = utils_yz.preprocessing.preprocess_test_df(df)
+    # best way to run: in jupyter notebook, run "run ds_utils / visualization.py".
+    df = ds_utils.base.make_test_df()
+    df = ds_utils.preprocessing.preprocess_test_df(df)
     print df.sample(5)
     print '-' * 50
 

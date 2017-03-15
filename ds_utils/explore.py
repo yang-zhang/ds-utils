@@ -2,8 +2,8 @@
 import numpy as np
 import pandas as pd
 
-import utils_yz.base
-import utils_yz.preprocessing
+import ds_utils.base
+import ds_utils.preprocessing
 
 
 def df_null_rate(df):
@@ -69,13 +69,13 @@ def df_categorical_col_value_percent(df, col):
 
 
 def df_describe_categorical_col_by_categorical_col(df, col_1, col_2):
-    tb = utils_yz.base.df_table_r(df, col_1, col_2)
+    tb = ds_utils.base.df_table_r(df, col_1, col_2)
     return tb / tb.sum(axis=0)
 
 
 if __name__ == '__main__':
-    df = utils_yz.base.make_test_df()
-    df = utils_yz.preprocessing.preprocess_test_df(df)
+    df = ds_utils.base.make_test_df()
+    df = ds_utils.preprocessing.preprocess_test_df(df)
     print df.sample(5)
     print '-' * 50
 

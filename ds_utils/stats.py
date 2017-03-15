@@ -4,8 +4,8 @@ import pandas as pd
 import statsmodels.stats.api as sms
 import scipy.stats
 
-import utils_yz.base
-import utils_yz.preprocessing
+import ds_utils.base
+import ds_utils.preprocessing
 
 
 # TODO: clean up
@@ -13,7 +13,7 @@ import utils_yz.preprocessing
 # numerical v.s. numerical
 def df_corrcoef_matrix(df, numerical_cols):
     dict_dtype_col = {'float': numerical_cols}
-    df = utils_yz.preprocessing.df_cast_column_types(df, dict_dtype_col)
+    df = ds_utils.preprocessing.df_cast_column_types(df, dict_dtype_col)
     matrix_corrcoef = np.corrcoef(np.array(df[numerical_cols].dropna()).T)
     df_corrcoef = pd.DataFrame(matrix_corrcoef)
     df_corrcoef.columns = numerical_cols
@@ -53,7 +53,7 @@ def df_t_test(df, col_binary, col_num):
 
 # chi-square test
 def df_chi_square_test(df, col_1, col_2):
-    contingency_table = utils_yz.base.df_table_r(df, col_1, col_2)
+    contingency_table = ds_utils.base.df_table_r(df, col_1, col_2)
     return scipy.stats.chi2_contingency(contingency_table)
 
 
@@ -69,8 +69,8 @@ def df_anova(df, col_num, col_cat):
 
 
 if __name__ == '__main__':
-    df = utils_yz.base.make_test_df()
-    df = utils_yz.preprocessing.preprocess_test_df(df)
+    df = ds_utils.base.make_test_df()
+    df = ds_utils.preprocessing.preprocess_test_df(df)
     print df.sample(5)
     print '-' * 50
 

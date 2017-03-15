@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
 
-import utils_yz.base
+import ds_utils.base
 
 
 def df_cast_column_types(df, dict_dtype_col):
@@ -61,7 +61,7 @@ def label_encode_train_test(df_train, df_test, cat_cols=None):
 
 
 if __name__ == '__main__':
-    df = utils_yz.base.make_test_df()
+    df = ds_utils.base.make_test_df()
 
     print df.sample(5)
     print df.dtypes
