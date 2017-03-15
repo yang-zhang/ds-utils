@@ -1,5 +1,5 @@
-# utils-python
-Python utility functions. A number of functions takes a list of columns in Pandas DataFrame and returns results in a single DataFrame.
+# ds-utils
+Python utility functions for data science. 
 - base
   - make_test_df
   - df_table_r: R-like table function
