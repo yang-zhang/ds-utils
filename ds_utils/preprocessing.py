@@ -6,7 +6,7 @@ import ds_utils.base
 
 def df_cast_column_types(df, dict_dtype_col):
     df_new = df.copy()
-    for dtype, cols in dict_dtype_col.items():
+    for dtype, cols in list(dict_dtype_col.items()):
         if dtype == 'datetime':
             for col in cols:
                 df_new[col] = pd.to_datetime(df_new[col])
@@ -63,20 +63,20 @@ def label_encode_train_test(df_train, df_test, cat_cols=None):
 if __name__ == '__main__':
     df = ds_utils.base.make_test_df()
 
-    print df.sample(5)
-    print df.dtypes
-    print '-' * 50
+    print(df.sample(5))
+    print(df.dtypes)
+    print('-' * 50)
 
-    print 'preprocess_test_df'
+    print('preprocess_test_df')
     df = preprocess_test_df(df)
-    print df.dtypes
-    print '-' * 50
+    print(df.dtypes)
+    print('-' * 50)
 
-    print 'df_replace_nan_by_missing'
+    print('df_replace_nan_by_missing')
     df = df_replace_nan_by_missing(df, 'region', by='unknown')
-    print df.region.cat.categories
-    print df.sample(5)
-    print '-' * 50
+    print(df.region.cat.categories)
+    print(df.sample(5))
+    print('-' * 50)
 
     df_train = pd.DataFrame({
         'letter': [
@@ -114,19 +114,19 @@ if __name__ == '__main__':
         'number': [2.5, 3.5],
 
     })
-    print df_train
-    print df_test
+    print(df_train)
+    print(df_test)
     categorical_cols = ['letter', 'animal', 'color']
 
-    print pd.get_dummies(df_train, columns=categorical_cols)
+    print(pd.get_dummies(df_train, columns=categorical_cols))
 
     df_train_dummies, df_test_dummies = get_dummies_train_test(
         df_train, df_test, cat_cols=categorical_cols)
-    print df_train_dummies
-    print df_test_dummies
+    print(df_train_dummies)
+    print(df_test_dummies)
 
-    print label_encode(df_train, cat_cols=categorical_cols)
+    print(label_encode(df_train, cat_cols=categorical_cols))
     df_train_label_encoded, df_test_label_encoded = label_encode_train_test(
         df_train, df_test, cat_cols=categorical_cols)
-    print df_train_label_encoded
-    print df_test_label_encoded
+    print(df_train_label_encoded)
+    print(df_test_label_encoded)

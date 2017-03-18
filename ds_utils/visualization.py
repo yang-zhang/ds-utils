@@ -20,7 +20,7 @@ def df_scatterplot(df, numerical_col_1, numerical_col_2):
 
 def df_barplot_frequency(df, col):
     df_freq = ds_utils.explore.df_categorical_col_value_percent(df, col)
-    print df_freq
+    print(df_freq)
     ax = plt.axes()
     sns.barplot(x=col, y='ratio', data=df_freq)
     ax.set_title(col)
@@ -56,8 +56,8 @@ if __name__ == '__main__':
     # best way to run: in jupyter notebook, run "run ds_utils / visualization.py".
     df = ds_utils.base.make_test_df()
     df = ds_utils.preprocessing.preprocess_test_df(df)
-    print df.sample(5)
-    print '-' * 50
+    print(df.sample(5))
+    print('-' * 50)
 
     plt.figure()
     df_hist(df, 'income')

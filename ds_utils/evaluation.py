@@ -25,4 +25,4 @@ if __name__ == '__main__':
     y2 = np.arange(2, 6)
     y1_log = np.log(y1)
     y2_log = np.log(y2)
-    print np.isclose(sklearn.metrics.mean_absolute_error(y1, y2), mean_absolute_exp_diff(y1_log, y2_log))
+    print(np.isclose(sklearn.metrics.mean_absolute_error(y1, y2), mean_absolute_exp_diff(y1_log, y2_log)))

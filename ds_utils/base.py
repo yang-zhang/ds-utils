@@ -6,7 +6,7 @@ import pandas as pd
 def make_test_df(n_row=1000):
     df = pd.DataFrame(
         {
-            'user_id': range(n_row),
+            'user_id': list(range(n_row)),
             'has_churned': np.random.choice([True, False], n_row),
             'price_plan': np.random.choice(['A', 'B'], n_row),
             'total_purchase': 20 * np.random.rand(n_row) + 100,
@@ -35,9 +35,9 @@ def df_table_r(df, col_1, col_2):
 
 if __name__ == '__main__':
     df = make_test_df()
-    print df.sample(5)
-    print '-' * 50
+    print(df.sample(5))
+    print('-' * 50)
 
-    print 'df_table_r'
-    print df_table_r(df, 'product_purchased', 'has_churned')
-    print '-' * 50
+    print('df_table_r')
+    print(df_table_r(df, 'product_purchased', 'has_churned'))
+    print('-' * 50)
