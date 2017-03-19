@@ -71,8 +71,10 @@ def df_anova(df, col_num, col_cat):
 if __name__ == '__main__':
     df = ds_utils.base.make_test_df()
     df = ds_utils.preprocessing.preprocess_test_df(df)
-    print df.sample(5)
-    print '-' * 50
+    print
+    df.sample(5)
+    print
+    '-' * 50
 
     # TODO: test
     # print 'df_corrcoef_matrix'

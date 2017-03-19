@@ -22,6 +22,7 @@ def df_cols_are_unique_key(df, cols):
     df_count_by_cols = df_count_star_groupby_cols(df, cols)
     return df_count_by_cols['count'].shape[0] == df.shape[0]
 
+
 # numerical
 
 def describe_numerical(x, percentiles=np.linspace(0, 1, 5)):
@@ -36,8 +37,10 @@ def describe_numerical(x, percentiles=np.linspace(0, 1, 5)):
     s2 = x.dropna().quantile(percentiles)
     return pd.concat([s1, s2])
 
+
 def df_describe_numerical_cols(df, cols):
     return df[cols].apply(describe_numerical)
+
 
 # numerical by categorical
 
@@ -45,6 +48,7 @@ def df_describe_numerical_cols(df, cols):
 def df_describe_numerical_cols_by_categorical_col(df, numerical_cols, categorical_col,
                                                   percentiles=np.linspace(0, 1, 5)):
     return df.groupby(categorical_col)[numerical_cols].apply(lambda x: x.dropna().quantile(percentiles))
+
 
 # categorical
 
@@ -58,8 +62,10 @@ def describe_categorical(x):
         }
     )
 
+
 def df_describe_categorical_cols(df, cols):
     return df[cols].apply(describe_categorical)
+
 
 def df_categorical_col_value_percent(df, col):
     freq = df[col].value_counts(dropna=False).sort_values(ascending=False) / df.shape[0]
@@ -70,9 +76,11 @@ def df_categorical_col_value_percent(df, col):
     df_freq.loc[df_freq[col].isnull(), col] = 'missing'
     return df_freq
 
+
 def df_describe_categorical_col_by_categorical_col(df, col_1, col_2):
     tb = ds_utils.base.df_table_r(df, col_1, col_2)
     return tb / tb.sum(axis=0)
+
 
 if __name__ == '__main__':
     df = ds_utils.base.make_test_df()
