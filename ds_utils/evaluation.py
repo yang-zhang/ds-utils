@@ -15,6 +15,7 @@ def logloss(act, pred):
     return ll
 
 
+# https://www.kaggle.com/c/avazu-ctr-prediction/discussion/10927
 def logloss_scalar(p, y):
     epsilon = 1e-15
     p = min(max(p, epsilon), 1-epsilon)
