@@ -52,6 +52,22 @@ def plot_pca_explained_variance_ratio(X, n_components=None):
     plt.ylabel('explained_variance_ratio_')
 
 
+def plot_df_rows(df, cols):
+    fig = plt.figure()
+    n, m = df[cols].shape
+    for i in range(n):
+        ax = fig.add_subplot(n, 1, i + 1)
+        ax.plot(df[cols].iloc[i].values, '.-')
+        ax.set_title(i)
+        ax.set_xlim([-1, m])
+        ax.set_ylim([0, 1])
+        ax.grid()
+    fig.subplots_adjust(hspace=0.4, top=1.2)
+    fig.set_figheight(n * 2)
+    fig.set_figwidth(16)
+    plt.show()
+
+
 if __name__ == '__main__':
     # best way to run: in jupyter notebook, run "run ds_utils / visualization.py".
     df = ds_utils.base.make_test_df()
