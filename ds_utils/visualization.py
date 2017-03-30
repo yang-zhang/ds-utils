@@ -52,7 +52,7 @@ def plot_pca_explained_variance_ratio(X, n_components=None):
     plt.ylabel('explained_variance_ratio_')
 
 
-def plot_df_rows(df, cols):
+def plot_df_rows(df, cols, save_as=None):
     fig = plt.figure()
     n, m = df[cols].shape
     for i in range(n):
@@ -65,7 +65,10 @@ def plot_df_rows(df, cols):
     fig.subplots_adjust(hspace=0.4, top=1.2)
     fig.set_figheight(n * 2)
     fig.set_figwidth(16)
-    plt.show()
+    if save_as:
+        plt.savefig(save_as)
+    else:
+        plt.show()
 
 
 if __name__ == '__main__':
