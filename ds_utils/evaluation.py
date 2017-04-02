@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import unittest
+
 import numpy as np
 import scipy as sp
 import sklearn.metrics
@@ -18,7 +20,7 @@ def logloss(act, pred):
 # https://www.kaggle.com/c/avazu-ctr-prediction/discussion/10927
 def logloss_scalar(y, p):
     epsilon = 1e-15
-    p = min(max(p, epsilon), 1-epsilon)
+    p = min(max(p, epsilon), 1 - epsilon)
     return -math.log(p) if y == 1. else -math.log(1. - p)
 
 
@@ -28,9 +30,16 @@ def mean_absolute_exp_diff(y1, y2):
 
 mean_absolute_exp_error = sklearn.metrics.make_scorer(mean_absolute_exp_diff, greater_is_better=False)
 
+
+class TestEvaluationMethods():
+    def test_mean_absolute_exp_diff(self):
+        y1 = np.arange(1, 5)
+        y2 = np.arange(2, 6)
+        y1_log = np.log(y1)
+        y2_log = np.log(y2)
+        np.testing.assert_array_almost_equal(
+            sklearn.metrics.mean_absolute_error(y1, y2), mean_absolute_exp_diff(y1_log, y2_log))
+
+
 if __name__ == '__main__':
-    y1 = np.arange(1, 5)
-    y2 = np.arange(2, 6)
-    y1_log = np.log(y1)
-    y2_log = np.log(y2)
-    print(np.isclose(sklearn.metrics.mean_absolute_error(y1, y2), mean_absolute_exp_diff(y1_log, y2_log)))
+    unittest.main()
