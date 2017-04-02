@@ -1,3 +1,5 @@
+import unittest
+
 import sklearn.decomposition
 import sklearn.datasets
 
@@ -20,7 +22,6 @@ def df_scatterplot(df, numerical_col_1, numerical_col_2):
 
 def df_barplot_frequency(df, col):
     df_freq = ds_utils.explore.df_categorical_col_value_percent(df, col)
-    print(df_freq)
     ax = plt.axes()
     sns.barplot(x=col, y='ratio', data=df_freq)
     ax.set_title(col)
@@ -71,30 +72,36 @@ def plot_df_rows(df, cols, save_as=None):
         plt.show()
 
 
+class TestVisualizationMethods(unittest.TestCase):
+    # best way to run: in jupyter notebook, run "run ds_utils / visualization.py".
+    def __init__(self, *args, **kargs):
+        super(TestVisualizationMethods, self).__init__(*args, **kargs)
+        test_df = ds_utils.testing.make_test_df()
+        self.df = ds_utils.testing.preprocess_test_df(test_df)
+
+    def test_visual_functions(self):
+        plt.figure()
+        df_hist(self.df, 'income')
+
+        plt.figure()
+        df_scatterplot(self.df, 'income', 'tax')
+
+        plt.figure()
+        df_barplot_frequency(self.df, 'region')
+
+        plt.figure()
+        df_boxplot_numerical_col_by_categorical_col(self.df, 'income', 'has_churned')
+
+        plt.figure()
+        df_stackedbarplot(self.df, 'region', 'product_purchased')
+
+        plt.figure()
+        df_pairplot(self.df, ['has_churned', 'income', 'price_plan',
+                              'product_purchased', 'region', 'tax', 'total_purchase'])
+
+        plot_pca_explained_variance_ratio(sklearn.datasets.load_digits().data)
+
+
 if __name__ == '__main__':
     # best way to run: in jupyter notebook, run "run ds_utils / visualization.py".
-    df = ds_utils.base.make_test_df()
-    df = ds_utils.preprocessing.preprocess_test_df(df)
-    print(df.sample(5))
-    print('-' * 50)
-
-    plt.figure()
-    df_hist(df, 'income')
-
-    plt.figure()
-    df_scatterplot(df, 'income', 'tax')
-
-    plt.figure()
-    df_barplot_frequency(df, 'region')
-
-    plt.figure()
-    df_boxplot_numerical_col_by_categorical_col(df, 'income', 'has_churned')
-
-    plt.figure()
-    df_stackedbarplot(df, 'region', 'product_purchased')
-
-    plt.figure()
-    df_pairplot(df, ['has_churned', 'income', 'price_plan',
-                     'product_purchased', 'region', 'tax', 'total_purchase'])
-
-    plot_pca_explained_variance_ratio(sklearn.datasets.load_digits().data)
+    unittest.main()
