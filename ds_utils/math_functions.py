@@ -1,3 +1,4 @@
+import unittest
 import numpy as np
 
 
@@ -22,10 +23,16 @@ def mad(x, constant=1.4826):
     return constant * np.median(abs(x - np.median(x)))
 
 
-if __name__ == '__main__':
-    x = np.random.exponential(size=10)
-    assert np.allclose(x, log_inv(log(x)))
-    assert np.allclose(x, log_inv(log(x, 5), 5))
+class TestMathFunctionsMethods(unittest.TestCase):
+    def test_log_inv(self):
+        x = np.random.exponential(size=10)
+        np.testing.assert_allclose(x, log_inv(log(x)))
+        np.testing.assert_allclose(x, log_inv(log(x, 5), 5))
 
-    x = np.array([1, 2, 3, 5, 7, 8])
-    assert mad(x, constant=1) == 2.5
+    def test_mad(self):
+        x = np.array([1, 2, 3, 5, 7, 8])
+        self.assertEqual(mad(x, constant=1), 2.5)
+
+
+if __name__ == '__main__':
+    unittest.main()
