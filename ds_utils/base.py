@@ -21,7 +21,9 @@ class TestBaseMethods(unittest.TestCase):
             'col_2': np.random.choice(['A', 'B', 'C'], n),
         })
         print(df.sample(3))
-        print(df_table_r(df, 'col_1', 'col_2'))
+        rtb = df_table_r(df, 'col_1', 'col_2')
+        print(rtb)
+
 
 
 if __name__ == '__main__':
