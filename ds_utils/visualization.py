@@ -80,26 +80,27 @@ class TestVisualizationMethods(unittest.TestCase):
         self.df = ds_utils.testing.preprocess_test_df(test_df)
 
     def test_visual_functions(self):
-        plt.figure()
         df_hist(self.df, 'income')
+        plt.show()
 
-        plt.figure()
         df_scatterplot(self.df, 'income', 'tax')
+        plt.show()
 
-        plt.figure()
         df_barplot_frequency(self.df, 'region')
+        plt.show()
 
-        plt.figure()
         df_boxplot_numerical_col_by_categorical_col(self.df, 'income', 'has_churned')
+        plt.show()
 
-        plt.figure()
         df_stackedbarplot(self.df, 'region', 'product_purchased')
+        plt.show()
 
-        plt.figure()
         df_pairplot(self.df, ['has_churned', 'income', 'price_plan',
                               'product_purchased', 'region', 'tax', 'total_purchase'])
+        plt.show()
 
         plot_pca_explained_variance_ratio(sklearn.datasets.load_digits().data)
+        plt.show()
 
 
 if __name__ == '__main__':
