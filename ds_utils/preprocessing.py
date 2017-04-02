@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
 
-import numpy as np
 import pandas as pd
 
 import testing
@@ -105,35 +104,35 @@ class TestPreprocessingMethods(unittest.TestCase):
                           }
         print(df_cast_column_types(self.df, dict_dtype_col).dtypes)
 
-        def test_df_replace_nan_by_missing(self):
-            print(self.df.sample(5))
-            print(self.df.dtypes)
-            print(df_replace_nan_by_missing(self.df, 'region', by='unknown').sample(5))
+    def test_df_replace_nan_by_missing(self):
+        print(self.df.sample(5))
+        print(self.df.dtypes)
+        print(df_replace_nan_by_missing(self.df, 'region', by='unknown').sample(5))
 
-        def test_get_dummies_train_test(self):
-            print(self.df_train)
-            print(self.df_test)
-            categorical_cols = ['letter', 'animal', 'color']
-            print(pd.get_dummies(self.df_train, columns=categorical_cols))
+    def test_get_dummies_train_test(self):
+        print(self.df_train)
+        print(self.df_test)
+        categorical_cols = ['letter', 'animal', 'color']
+        print(pd.get_dummies(self.df_train, columns=categorical_cols))
 
-            df_train_dummies, df_test_dummies = get_dummies_train_test(
-                self.df_train, self.df_test, cat_cols=categorical_cols)
-            print(df_train_dummies)
-            print(df_test_dummies)
+        df_train_dummies, df_test_dummies = get_dummies_train_test(
+            self.df_train, self.df_test, cat_cols=categorical_cols)
+        print(df_train_dummies)
+        print(df_test_dummies)
 
-        def test_label_encode(self):
-            categorical_cols = ['letter', 'animal', 'color']
-            print(self.df_train)
-            print(label_encode(self.df_train, cat_cols=categorical_cols))
+    def test_label_encode(self):
+        categorical_cols = ['letter', 'animal', 'color']
+        print(self.df_train)
+        print(label_encode(self.df_train, cat_cols=categorical_cols))
 
-        def test_label_encode_train_test(self):
-            print(self.df_train)
-            print(self.df_test)
-            categorical_cols = ['letter', 'animal', 'color']
-            df_train_label_encoded, df_test_label_encoded = label_encode_train_test(
-                self.df_train, self.df_test, cat_cols=categorical_cols)
-            print(df_train_label_encoded)
-            print(df_test_label_encoded)
+    def test_label_encode_train_test(self):
+        print(self.df_train)
+        print(self.df_test)
+        categorical_cols = ['letter', 'animal', 'color']
+        df_train_label_encoded, df_test_label_encoded = label_encode_train_test(
+            self.df_train, self.df_test, cat_cols=categorical_cols)
+        print(df_train_label_encoded)
+        print(df_test_label_encoded)
 
 
 if __name__ == '__main__':
