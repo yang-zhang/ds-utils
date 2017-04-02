@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import unittest
+
 import numpy as np
 import pandas as pd
 
 import ds_utils.base
-import ds_utils.preprocessing
+import ds_utils.testing
 
 
 def df_null_rate(df):
@@ -82,42 +84,38 @@ def df_describe_categorical_col_by_categorical_col(df, col_1, col_2):
     return tb / tb.sum(axis=0)
 
 
+class TestExploreMethods(unittest.TestCase):
+    def __init__(self, *args, **kargs):
+        super(TestExploreMethods, self).__init__(*args, **kargs)
+        test_df = ds_utils.testing.make_test_df()
+        self.df = ds_utils.testing.preprocess_test_df(test_df)
+        self.target = 'has_churned'
+        self.numerical_features = ['income', 'total_purchase']
+        self.numerical_cols = [self.target] + self.numerical_features
+        self.categorical_features = ['price_plan', 'product_purchased', 'region']
+        self.categorical_cols = [self.target] + ['price_plan', 'product_purchased', 'region']
+        print(self.df.sample(5))
+
+    def test_df_col_is_unique_key(self):
+        print(df_col_is_unique_key(self.df, 'user_id'))
+
+    def test_df_describe_numerical_cols(self):
+        print(df_describe_numerical_cols_by_categorical_col(self.df, self.numerical_features, self.target))
+
+    def test_df_describe_numerical_cols_by_categorical_col(self):
+        print(df_describe_numerical_cols_by_categorical_col(self.df, self.numerical_features, self.target))
+
+    def test_df_describe_categorical_cols(self):
+        print(df_describe_categorical_cols(self.df, self.categorical_cols))
+
+    def test_df_categorical_col_value_percent(self):
+        for col in self.categorical_cols:
+            print(df_categorical_col_value_percent(self.df, col))
+
+    def test_df_describe_categorical_col_by_categorical_col(self):
+        print('df_describe_categorical_col_by_categorical_col')
+        for col in self.categorical_features:
+            print(df_describe_categorical_col_by_categorical_col(self.df, col, self.target))
+
 if __name__ == '__main__':
-    df = ds_utils.base.make_test_df()
-    df = ds_utils.preprocessing.preprocess_test_df(df)
-    print(df.sample(5))
-    print('-' * 50)
-
-    print('df_col_is_unique_key')
-    print(df_col_is_unique_key(df, 'user_id'))
-    print('-' * 50)
-
-    target = 'has_churned'
-    numerical_features = ['income', 'total_purchase']
-    numerical_cols = [target] + numerical_features
-
-    print('df_describe_numerical_cols')
-    print(df_describe_numerical_cols(df, numerical_cols))
-    print('-' * 50)
-
-    print('df_describe_numerical_cols_by_categorical_col')
-    print(df_describe_numerical_cols_by_categorical_col(df, numerical_features, target))
-    print('-' * 50)
-
-    categorical_features = ['price_plan', 'product_purchased', 'region']
-    categorical_cols = [target] + ['price_plan', 'product_purchased', 'region']
-    print('df_describe_categorical_cols')
-    print(df_describe_categorical_cols(df, categorical_cols))
-    print('-' * 50)
-
-    print('df_categorical_col_value_percent')
-    for col in categorical_cols:
-        print(df_categorical_col_value_percent(df, col))
-    print('-' * 50)
-
-    print(df['has_churned'].dtype)
-
-    print('df_describe_categorical_col_by_categorical_col')
-    for col in categorical_features:
-        print(df_describe_categorical_col_by_categorical_col(df, col, target))
-    print('-' * 50)
+    unittest.main()

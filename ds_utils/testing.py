@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+import unittest
+
 import numpy as np
 import pandas as pd
+
+import ds_utils.preprocessing
 
 
 def make_test_df(n_row=1000):
@@ -25,7 +29,24 @@ def make_test_df(n_row=1000):
     return df
 
 
+def preprocess_test_df(df):
+    dict_dtype_col = {'float': ['income', 'user_id'],
+                      'int': ['total_purchase', ],
+                      'category': ['price_plan', 'product_purchased', 'region'],
+                      'datetime': ['date_signed_on'],
+                      }
+    return ds_utils.preprocessing.df_cast_column_types(df, dict_dtype_col)
+
+
+class TestTestingMethods(unittest.TestCase):
+    def test_make_test_df(self):
+        print(make_test_df().sample(5))
+
+    def test_preprocess_test_df(self):
+        dfm = make_test_df()
+        print(dfm.dtypes)
+        print(preprocess_test_df(df=dfm).dtypes)
+
+
 if __name__ == '__main__':
-    dfm = make_test_df()
-    print(dfm.sample(5))
-    print('-' * 50)
+    unittest.main()

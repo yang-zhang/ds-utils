@@ -3,7 +3,7 @@ import unittest
 
 import pandas as pd
 
-import testing
+import ds_utils.testing
 
 
 def df_cast_column_types(df, dict_dtype_col):
@@ -56,7 +56,8 @@ def label_encode_train_test(df_train, df_test, cat_cols=None):
 class TestPreprocessingMethods(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestPreprocessingMethods, self).__init__(*args, **kwargs)
-        self.df = testing.make_test_df()
+        test_df = ds_utils.testing.make_test_df()
+        self.df = ds_utils.testing.preprocess_test_df(test_df)
         self.df_train = pd.DataFrame({
             'letter': [
                 'a',
@@ -107,7 +108,9 @@ class TestPreprocessingMethods(unittest.TestCase):
     def test_df_replace_nan_by_missing(self):
         print(self.df.sample(5))
         print(self.df.dtypes)
-        print(df_replace_nan_by_missing(self.df, 'region', by='unknown').sample(5))
+        df_filled = df_replace_nan_by_missing(self.df, 'region', by='unknown')
+        print(df_filled.sample(5))
+        print(df_filled.region.cat.categories)
 
     def test_get_dummies_train_test(self):
         print(self.df_train)
@@ -116,7 +119,7 @@ class TestPreprocessingMethods(unittest.TestCase):
         print(pd.get_dummies(self.df_train, columns=categorical_cols))
 
         df_train_dummies, df_test_dummies = get_dummies_train_test(
-            self.df_train, self.df_test, cat_cols=categorical_cols)
+            df_train=self.df_train, df_test=self.df_test, cat_cols=categorical_cols)
         print(df_train_dummies)
         print(df_test_dummies)
 
