@@ -16,6 +16,7 @@ def dataframize_vec_function(vec_fun):
     def df_fun(df, col_1, col_2):
         df_cols_dropna = df[[col_1, col_2]].dropna()
         return vec_fun(df_cols_dropna[col_1], df_cols_dropna[col_2])
+
     return df_fun
 
 
@@ -26,9 +27,7 @@ def vec_corrcoef(x1, x2):
     return {'corr_coef': corr_coef, 'p_value': p_value}
 
 
-def df_cols_corrcoef(df, col_1, col_2):
-    df_cols_dropna = df[[col_1, col_2]].dropna()
-    return vec_corrcoef(df_cols_dropna[col_1], df_cols_dropna[col_2])
+df_cols_corrcoef = dataframize_vec_function(vec_corrcoef)
 
 
 def df_corrcoef_matrix(df, numerical_cols):
@@ -48,9 +47,7 @@ def vec_chisq(x1, x2):
     return scipy.stats.chi2_contingency(tb)
 
 
-def df_cols_chisq(df, col_1, col_2):
-    df_cols_dropna = df[[col_1, col_2]].dropna()
-    return vec_chisq(df_cols_dropna[col_1], df_cols_dropna[col_2])
+df_cols_chisq = dataframize_vec_function(vec_chisq)
 
 
 # ### a refactor of the above; equivalent
@@ -86,6 +83,9 @@ def df_cols_mutual_info(df, col_1, col_2):
     return vec_mutual_info(df_cols_dropna[col_1], df_cols_dropna[col_2])
 
 
+df_cols_mutual_info = dataframize_vec_function(vec_mutual_info)
+
+
 # # numerical v.s. categorical
 # ## t-test
 # ### http://stackoverflow.com/questions/31768464/confidence-interval-for-t-test-difference-between-means-in-python
@@ -96,6 +96,12 @@ def vec_t_test_conf_interval(x1, x2):
 
 
 def vec_t_test(vec_binary, vec_num):
+    """
+        Use cases:
+            col_binary: binary feature; col_num: binary target (e.g., A/B test on conversion)
+            col_binary: binary feature; col_num: numerical target (e.g., A/B test on revenue)
+            col_binary: binary target; col_num: numerical feature (e.g., age on conversion)
+    """
     binary_v1, binary_v2 = np.unique(vec_binary)
     x1 = vec_num[vec_binary == binary_v1]
     x2 = vec_num[vec_binary == binary_v2]
@@ -108,15 +114,7 @@ def vec_t_test(vec_binary, vec_num):
     }
 
 
-def df_cols_t_test(df, col_binary, col_num):
-    """
-    Use cases:
-        col_binary: binary feature; col_num: binary target (e.g., A/B test on conversion)
-        col_binary: binary feature; col_num: numerical target (e.g., A/B test on revenue)
-        col_binary: binary target; col_num: numerical feature (e.g., age on conversion)
-    """
-    df_cols_dropna = df[[col_binary, col_num]].dropna()
-    return vec_t_test(df_cols_dropna[col_binary], df_cols_dropna[col_num])
+df_cols_t_test = dataframize_vec_function(vec_t_test)
 
 
 # ## anova
@@ -130,9 +128,7 @@ def vec_anova(vec_cat, vec_num):
     return scipy.stats.f_oneway(*list_vec_per_value)
 
 
-def df_cols_anova(df, col_cat, col_num):
-    df_cols_dropna = df[[col_cat, col_num]].dropna()
-    return vec_anova(df_cols_dropna[col_cat], df_cols_dropna[col_num])
+df_cols_anova = dataframize_vec_function(vec_anova)
 
 
 class TestStatsMethods(unittest.TestCase):
