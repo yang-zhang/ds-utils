@@ -36,46 +36,53 @@ def df_corrcoef_matrix(df, numerical_cols):
 # categorical v.s. categorical
 # chisq
 def vec_chisq(x1, x2):
-    df = pd.DataFrame({
-        '_': 0,
-        'x1': x1,
-        'x2': x2,
-    })
+    tb = ds_utils.base.vec_table_r(x1, x2)
+    return scipy.stats.chi2_contingency(tb)
 
-    contingency_table = df.pivot_table(
-        values='_',
-        columns='x1',
-        index='x2',
-        aggfunc='count')
 
-    return scipy.stats.chi2_contingency(contingency_table)
-
-# chi-square test
 def df_cols_chisq(df, col_1, col_2):
-    contingency_table = ds_utils.base.df_table_r(df, col_1, col_2)
-    return scipy.stats.chi2_contingency(contingency_table)
+    return vec_chisq(df[col_1], df[col_2])
 
 
-# mutual info
+# a refactor of the above
+def df_cols_chisq_2(df, col_1, col_2):
+    tb = ds_utils.base.df_table_r(df, col_1, col_2)
+    return scipy.stats.chi2_contingency(tb)
+
+
+# mutual info todo
+def vec_mutual_info(x1, x2):
+    pass
+
+
+def df_cols_mutual_info(df, col_1, col_2):
+    return vec_mutual_info(df[col_1], df[col_2])
+
 
 # numerical v.s. categorical
 # t-test
 # http://stackoverflow.com/questions/31768464/confidence-interval-for-t-test-difference-between-means-in-python
-def t_test_confidence_interval(x1, x2):
+def vec_t_tet(x1, x2):
+    pass
+
+
+def vec_t_test_conf_interval(x1, x2):
     cm = sms.CompareMeans(sms.DescrStatsW(np.array(x1)), sms.DescrStatsW(np.array(x2)))
     return cm.tconfint_diff(usevar='unequal')
 
 
-# use cases
-# col_binary: binary feature; col_num: binary target (e.g., A/B test on conversion)
-# col_binary: binary feature; col_num: numerical target (e.g., A/B test on revenue)
-# col_binary: binary target; col_num: numerical feature (e.g., age on conversion)
 def df_t_test(df, col_binary, col_num):
+    """
+    Use cases:
+        col_binary: binary feature; col_num: binary target (e.g., A/B test on conversion)
+        col_binary: binary feature; col_num: numerical target (e.g., A/B test on revenue)
+        col_binary: binary target; col_num: numerical feature (e.g., age on conversion)
+    """
     col_binary_v1, col_binary_v2 = df[col_binary].dropna().unique()
     x1 = df[col_num][df[col_binary] == col_binary_v1].dropna()
     x2 = df[col_num][df[col_binary] == col_binary_v2].dropna()
     t, p = scipy.stats.ttest_ind(x1, x2)
-    confidence_interval = t_test_confidence_interval(x1, x2)
+    confidence_interval = vec_t_test_conf_interval(x1, x2)
     return {
         't': t,
         'p': p,
@@ -84,6 +91,10 @@ def df_t_test(df, col_binary, col_num):
 
 
 # anova
+def vec_anova(x1, x2):
+    pass
+
+
 def df_anova(df, col_num, col_cat):
     cat_col_unique_values = df[col_cat].dropna().unique()
     list_vec_per_value = []
@@ -100,7 +111,7 @@ class TestStatsMethods(unittest.TestCase):
 
     print(df.sample(5))
 
-    n = 100
+    n = 1000
     some_numerical = np.random.uniform(0, 1, n)
     some_numerical_with_noise = some_numerical + 0.1 * np.random.randn(n)
 
@@ -123,10 +134,20 @@ class TestStatsMethods(unittest.TestCase):
         print(df_corrcoef_matrix(self.df, numerical_cols=['total_purchase', 'income', 'tax']))
 
     def test_chisq(self):
+        print(self.some_random_int)
+        print(self.correlated_random_int)
         print(vec_chisq(self.some_random_int, self.correlated_random_int))
         print(vec_chisq(self.df['has_churned'], self.df['price_plan']))
         print(df_cols_chisq(self.df, 'has_churned', 'price_plan'))
 
+    def test_mutual_info(self):
+        pass
+
+    def test_t_test(self):
+        pass
+
+    def test_anova(self):
+        pass
 
 
 if __name__ == '__main__':
