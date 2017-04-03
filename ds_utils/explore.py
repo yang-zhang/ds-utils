@@ -6,7 +6,7 @@ import pandas as pd
 
 import ds_utils.base
 import ds_utils.testing
-
+import ds_utils.preprocessing
 
 def df_null_rate(df):
     return df.apply(lambda x: x.isnull().sum() / float(df.shape[0]))
@@ -85,16 +85,14 @@ def df_describe_categorical_col_by_categorical_col(df, col_1, col_2):
 
 
 class TestExploreMethods(unittest.TestCase):
-    def __init__(self, *args, **kargs):
-        super(TestExploreMethods, self).__init__(*args, **kargs)
-        test_df = ds_utils.testing.make_test_df()
-        self.df = ds_utils.testing.preprocess_test_df(test_df)
-        self.target = 'has_churned'
-        self.numerical_features = ['income', 'total_purchase']
-        self.numerical_cols = [self.target] + self.numerical_features
-        self.categorical_features = ['price_plan', 'product_purchased', 'region']
-        self.categorical_cols = [self.target] + ['price_plan', 'product_purchased', 'region']
-        print(self.df.sample(5))
+    test_df = ds_utils.testing.make_test_df()
+    df = ds_utils.preprocessing.df_cast_column_types(test_df, ds_utils.testing.test_df_dict_dtype_col)
+    target = 'has_churned'
+    numerical_features = ['income', 'total_purchase']
+    numerical_cols = [target] + numerical_features
+    categorical_features = ['price_plan', 'product_purchased', 'region']
+    categorical_cols = [target] + ['price_plan', 'product_purchased', 'region']
+    print(df.sample(5))
 
     def test_df_col_is_unique_key(self):
         print(df_col_is_unique_key(self.df, 'user_id'))

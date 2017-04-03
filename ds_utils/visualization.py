@@ -74,10 +74,8 @@ def plot_df_rows(df, cols, save_as=None):
 
 class TestVisualizationMethods(unittest.TestCase):
     # best way to run: in jupyter notebook, run "run ds_utils / visualization.py".
-    def __init__(self, *args, **kargs):
-        super(TestVisualizationMethods, self).__init__(*args, **kargs)
-        test_df = ds_utils.testing.make_test_df()
-        self.df = ds_utils.testing.preprocess_test_df(test_df)
+    test_df = ds_utils.testing.make_test_df()
+    df = ds_utils.preprocessing.df_cast_column_types(test_df, ds_utils.testing.test_df_dict_dtype_col)
 
     def test_visual_functions(self):
         df_hist(self.df, 'income')

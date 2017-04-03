@@ -54,46 +54,44 @@ def label_encode_train_test(df_train, df_test, cat_cols=None):
 
 
 class TestPreprocessingMethods(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
-        super(TestPreprocessingMethods, self).__init__(*args, **kwargs)
-        test_df = ds_utils.testing.make_test_df()
-        self.df = ds_utils.testing.preprocess_test_df(test_df)
-        self.df_train = pd.DataFrame({
-            'letter': [
-                'a',
-                'b',
-                'c',
-            ],
-            'animal': [
-                'dog',
-                'cat',
-                'dog',
-            ],
-            'color': [
-                'red',
-                'green',
-                'blue',
-            ],
-            'number': [1., 2.5, 3.],
-            'target': [True, False, True]
-        })
+    test_df = ds_utils.testing.make_test_df()
+    df = df_cast_column_types(test_df, ds_utils.testing.test_df_dict_dtype_col)
+    df_train = pd.DataFrame({
+        'letter': [
+            'a',
+            'b',
+            'c',
+        ],
+        'animal': [
+            'dog',
+            'cat',
+            'dog',
+        ],
+        'color': [
+            'red',
+            'green',
+            'blue',
+        ],
+        'number': [1., 2.5, 3.],
+        'target': [True, False, True]
+    })
 
-        self.df_test = pd.DataFrame({
-            'letter': [
-                'a',
-                'b',
-            ],
-            'animal': [
-                'dog',
-                'pig',
-            ],
-            'color': [
-                'red',
-                'green',
-            ],
-            'number': [2.5, 3.5],
+    df_test = pd.DataFrame({
+        'letter': [
+            'a',
+            'b',
+        ],
+        'animal': [
+            'dog',
+            'pig',
+        ],
+        'color': [
+            'red',
+            'green',
+        ],
+        'number': [2.5, 3.5],
 
-        })
+    })
 
     def test_df_cast_column_types(self):
         print(self.df.sample(5))
@@ -116,7 +114,6 @@ class TestPreprocessingMethods(unittest.TestCase):
         print(self.df_train)
         print(self.df_test)
         categorical_cols = ['letter', 'animal', 'color']
-        print(pd.get_dummies(self.df_train, columns=categorical_cols))
 
         df_train_dummies, df_test_dummies = get_dummies_train_test(
             df_train=self.df_train, df_test=self.df_test, cat_cols=categorical_cols)
@@ -133,7 +130,7 @@ class TestPreprocessingMethods(unittest.TestCase):
         print(self.df_test)
         categorical_cols = ['letter', 'animal', 'color']
         df_train_label_encoded, df_test_label_encoded = label_encode_train_test(
-            self.df_train, self.df_test, cat_cols=categorical_cols)
+            df_train=self.df_train, df_test=self.df_test, cat_cols=categorical_cols)
         print(df_train_label_encoded)
         print(df_test_label_encoded)
 
