@@ -13,6 +13,10 @@ import ds_utils.testing
 
 
 def dataframize_vec_function(vec_fun):
+    """
+    Make a vector function into a data frame function.
+    """
+
     def df_fun(df, col_1, col_2):
         df_cols_dropna = df[[col_1, col_2]].dropna()
         return vec_fun(df_cols_dropna[col_1], df_cols_dropna[col_2])
@@ -132,6 +136,9 @@ df_cols_anova = dataframize_vec_function(vec_anova)
 
 
 class TestStatsMethods(unittest.TestCase):
+    def setUp(self):
+        print("Testing " + self._testMethodName)
+
     test_df = ds_utils.testing.make_test_df()
     df = ds_utils.preprocessing.df_cast_column_types(test_df, ds_utils.testing.test_df_dict_dtype_col)
 
