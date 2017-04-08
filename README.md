@@ -1,4 +1,3 @@
-# ds-utils
 Python utility functions for data science. 
 - base
   - make_test_df
