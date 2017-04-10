@@ -8,12 +8,17 @@ import ds_utils.base
 import ds_utils.testing
 import ds_utils.preprocessing
 
+
 def df_null_rate(df):
     return df.apply(lambda x: x.isnull().sum() / float(df.shape[0]))
 
 
 def df_col_is_unique_key(df, col):
     return df[col].nunique() == df.shape[0]
+
+
+def df_get_unique_keys(df):
+    return [col for col in df.columns if df_col_is_unique_key(df, col)]
 
 
 def df_count_star_groupby_cols(df, cols):
@@ -97,6 +102,9 @@ class TestExploreMethods(unittest.TestCase):
     def test_df_col_is_unique_key(self):
         print(df_col_is_unique_key(self.df, 'user_id'))
 
+    def test_df_get_unique_keys(self):
+        print(df_get_unique_keys(self.df))
+
     def test_df_describe_numerical_cols(self):
         print(df_describe_numerical_cols_by_categorical_col(self.df, self.numerical_features, self.target))
 
@@ -114,6 +122,7 @@ class TestExploreMethods(unittest.TestCase):
         print('df_describe_categorical_col_by_categorical_col')
         for col in self.categorical_features:
             print(df_describe_categorical_col_by_categorical_col(self.df, col, self.target))
+
 
 if __name__ == '__main__':
     unittest.main()
