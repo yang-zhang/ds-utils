@@ -1,39 +1,12 @@
-# ds-utils
 Python utility functions for data science. 
-- base
-  - make_test_df
-  - df_table_r: R-like table function
-- preprocessing
-  - df_cast_column_types: cast all types in one function
-  - df_replace_nan_by_missing: replace nan while dealing with categorial
-- explore
-  - numerical
-    - distribution (quantiles)
-    - distribution (quantiles) per target value
-  - categorical
-    - distribution
-    - distribution per target value
-- visualization
-  - numerical
-    - histogram
-    - frequency barplot (for low-cardinality variable)
-  - categorical
-    - frequency barplot
-  - numerical v.s. numerical
-    - scatterplot
-  - numerical v.s. categorical
-    - boxplot
-  - categorical v.s. categorical
-    - stacked barplot
-  - all variable
-    - pairplot
-- stats
-  - correlation coefficient 
-  - t-test
-  - chi-square
-  - anova
-- math_functions
-  - log and log_inv
-  - mad (median absolute deviation)
-- evaluation
-  - logloss
+- [Base](https://github.com/yang-zhang/ds-utils/blob/master/ds_utils/base.py)
+- [Explore](https://github.com/yang-zhang/ds-utils/blob/master/ds_utils/explore.py)
+- [Preprocessing](https://github.com/yang-zhang/ds-utils/blob/master/ds_utils/preprocessing.py)
+- [Stats](https://github.com/yang-zhang/ds-utils/blob/master/ds_utils/stats.py)
+- [Math](https://github.com/yang-zhang/ds-utils/blob/master/ds_utils/math_functions.py)
+- [Evaluation](https://github.com/yang-zhang/ds-utils/blob/master/ds_utils/evaluation.py)
+- [Visualization](https://github.com/yang-zhang/ds-utils/blob/master/ds_utils/visualization.py)
+
+---
+Back to [Home Page](https://yang-zhang.github.io/)
+
