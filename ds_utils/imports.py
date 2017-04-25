@@ -6,6 +6,7 @@
 
 import sys
 import os
+from imp import reload
 
 import numpy as np
 import pandas as pd
@@ -23,6 +24,9 @@ import sklearn.ensemble
 import xgboost as xgb
 
 os.environ["KERAS_BACKEND"] = "theano"
+
 import keras
+
 from keras import backend as K
+
 K.set_image_dim_ordering('th')
