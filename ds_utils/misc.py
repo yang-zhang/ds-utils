@@ -1,3 +1,4 @@
+from ds_utils.imports import *
 import os
 import numpy as np
 import glob
@@ -42,3 +43,7 @@ def copy_sample(dir_source, dir_destin, file_type, n):
     fs_shuffle = np.random.permutation(fs)
     for i in range(n):
         shutil.copyfile(dir_source + '/' + fs_shuffle[i], dir_destin + '/' + fs_shuffle[i])
+
+
+def imshow_gray(array):
+    plt.imshow(array, cmap=plt.cm.gray_r)
