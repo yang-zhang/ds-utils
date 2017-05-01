@@ -7,6 +7,8 @@
 import sys
 import os
 from imp import reload
+import datetime
+import time
 
 import numpy as np
 import pandas as pd
@@ -30,3 +32,6 @@ import keras
 from keras import backend as K
 
 K.set_image_dim_ordering('th')
+
+from secrets import KAGGLE_USER, KAGGLE_PW
+pd.options.display.max_columns = None

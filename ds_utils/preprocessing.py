@@ -2,6 +2,7 @@
 import unittest
 
 import pandas as pd
+import numpy as np
 
 import ds_utils.testing
 
@@ -51,6 +52,10 @@ def label_encode_train_test(df_train, df_test, cat_cols=None):
     df_train_label_encoded = df_train_test.ix['train']
     df_test_label_encoded = df_train_test.ix['test']
     return df_train_label_encoded, df_test_label_encoded
+
+
+def df_drop_cols(df, cols):
+    df.drop(cols, axis=1, inplace=True)
 
 
 class TestPreprocessingMethods(unittest.TestCase):
@@ -134,6 +139,15 @@ class TestPreprocessingMethods(unittest.TestCase):
         print(df_train_label_encoded)
         print(df_test_label_encoded)
 
+    def test_df_drop_cols(self):
+        df = pd.DataFrame(
+            {
+                'col1': np.ones(10),
+                'col2': np.ones(10),
+                'col3': np.ones(10),
+            }
+        )
+        df_drop_cols(df, ['col2', 'col3'])
 
 if __name__ == '__main__':
     unittest.main()

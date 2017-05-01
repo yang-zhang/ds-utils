@@ -1,4 +1,5 @@
 import os
+import datetime
 import numpy as np
 import glob
 import shutil
@@ -47,3 +48,7 @@ def copy_sample(dir_source, dir_destin, file_type, n):
 
 def imshow_gray(array):
     plt.imshow(array, cmap=plt.cm.gray_r)
+
+
+def datetime_now_string():
+    return datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
