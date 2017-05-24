@@ -5,6 +5,10 @@ import glob
 import shutil
 
 import matplotlib.pyplot as plt
+import IPython.display
+
+import keras.utils.vis_utils
+
 
 def move_sample(dir_source, dir_destin, file_type, n):
     """
@@ -52,3 +56,7 @@ def imshow_gray(array):
 
 def datetime_now_string():
     return datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+
+
+def plot_keras_model(model, show_shapes=True):
+    return IPython.display.SVG(keras.utils.vis_utils.model_to_dot(model, show_shapes=show_shapes).create(prog='dot', format='svg'))
