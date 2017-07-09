@@ -9,6 +9,7 @@ import IPython.display
 
 import keras.utils.vis_utils
 
+from inspect import getsourcelines
 
 def move_sample(dir_source, dir_destin, file_type, n):
     """
@@ -60,3 +61,8 @@ def datetime_now_string():
 
 def plot_keras_model(model, show_shapes=True):
     return IPython.display.SVG(keras.utils.vis_utils.model_to_dot(model, show_shapes=show_shapes).create(prog='dot', format='svg'))
+
+
+def print_source(obj):
+    print(''.join(getsourcelines(obj)[0]))
+
